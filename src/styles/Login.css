@@ -1,0 +1,147 @@
+/* --- CONTENEDOR PRINCIPAL --- */
+.login-page-container {
+    min-height: 100vh;
+    width: 100%;
+    background-image: url('/Fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-wrap: wrap; /* Permite que se acomoden en móviles */
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 40px;
+    box-sizing: border-box;
+}
+
+/* --- FORMULARIO STAFF (CAFÉ) --- */
+.login-form-staff {
+    background-color: #b59981; /* Color café del restaurante */
+    padding: 50px;
+    border-radius: 40px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex: column;
+    flex-direction: column;
+}
+
+.login-title-staff {
+    color: white;
+    font-size: 1.8rem;
+    font-family: serif;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.login-input-staff {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.8);
+    padding: 10px 5px;
+    margin-bottom: 20px;
+    color: black;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.login-input-staff::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.login-input-staff:focus {
+    border-bottom-color: white;
+}
+
+.login-button-staff {
+    background-color: #e6d2c1;
+    color: black;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    transition: all 0.3s;
+}
+
+.login-button-staff:hover {
+    background-color: #d9c5b4;
+}
+
+.login-button-staff:active {
+    transform: scale(0.95);
+}
+
+.login-forgot-pass {
+    text-align: center;
+    margin-top: 25px;
+    color: black;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.login-forgot-pass:hover {
+    color: white;
+}
+
+/* --- FORMULARIO CLIENTE (OSCURO) --- */
+.login-form-client {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+    padding: 35px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-title-client {
+    color: white;
+    font-size: 1.5rem;
+    font-family: serif;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-select-client {
+    background-color: #e6d2c1;
+    color: black;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    font-weight: bold;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.login-button-client {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button-client:hover {
+    background-color: #e2e2e2;
+}
+
+/* Ajustes para móviles */
+@media (max-width: 768px) {
+    .login-page-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+}

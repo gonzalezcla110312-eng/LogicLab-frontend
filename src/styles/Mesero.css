@@ -1,0 +1,229 @@
+/* DISEÑO PANEL DE LOS MESEROS */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 50px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid #d48037;
+  border-radius: 12px;
+}
+
+.titulo-panel {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #d48037;
+  text-align: left;
+}
+
+.perfil-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-align: right;
+}
+
+.label-rol {
+  font-size: 0.7rem;
+  color: #ff6600;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.nombre-usuario {
+  margin: 0;
+  font-size: 1.2rem;
+  color: white;
+  text-transform: uppercase;
+}
+
+.btn-salir-header {
+  background-color: #d47b37;
+  color: black;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.btn-salir-header:hover {
+  background-color: #ff6600;
+  transform: scale(1.05);
+}
+
+.Panel-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('/Fondo.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 60px 20px;
+  color: white;
+  box-sizing: border-box;
+}
+
+/* ── Sección Mesas ── */
+.seccion-mesas {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.titulo-seccion {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  display: inline-block;
+  padding: 10px 40px;
+  border-radius: 30px;
+  border: 1px solid rgba(212, 128, 55, 0.3);
+  margin-bottom: 25px;
+}
+
+.seccion-mesas h3 {
+  margin: 0;
+  color: #d48037;
+  letter-spacing: 5px;
+  font-weight: bold;
+}
+
+.mesas-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding: 10px;
+}
+
+.mesa-card {
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.mesa-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(212, 128, 55, 0.3);
+}
+.mesa-card.disponible {
+  background: rgba(46, 204, 113, 0.2);
+  border-left: 5px solid #2ecc71;
+}
+.mesa-card.ocupada {
+  background: rgba(231, 76, 60, 0.2);
+  border-left: 5px solid #e74c3c;
+}
+
+.numero-mesa {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.estado-texto {
+  font-size: 0.6rem;
+  color: #bbb;
+  margin-top: 5px;
+}
+
+.btn-cambiar-estado {
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-cambiar-estado:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Contenedor Mensajes ── */
+.contenedor-mensajes {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.btn-mensaje1,
+.btn-mensaje2 {
+  flex: 1;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-mensaje1 h3,
+.btn-mensaje2 h3 {
+  color: #d48037;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin: 0 0 6px;
+}
+
+.btn-mensaje1 p,
+.btn-mensaje2 p {
+  background-color: black;
+  color: #ff6600;
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 0;
+  transition: background 0.2s;
+}
+
+/* Badge activo cuando hay notificaciones */
+.notificacion-activa {
+  background-color: #e74c3c !important;
+  color: white !important;
+  box-shadow: 0 0 12px rgba(231, 76, 60, 0.5);
+}
+
+/* ── Botones inferiores ── */
+.Botones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.btn-1, .btn-2, .btn-3, .btn-4 {
+  background-color: #e5d3b3;
+  color: #000;
+  border: none;
+  padding: 18px 0;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  cursor: pointer;
+  width: 85%;
+  max-width: 320px;
+  display: block;
+  transition: transform 0.2s;
+}
+.btn-1:hover, .btn-2:hover, .btn-3:hover, .btn-4:hover {
+  background-color: #d4c1a1;
+  transform: scale(1.03);
+}
