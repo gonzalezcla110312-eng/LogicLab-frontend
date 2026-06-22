@@ -1,8 +1,10 @@
+/* eslint-disable react/prop-types, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
 import '../styles/Mesero.css';
 import '../App.css';
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { obtenerMesas, obtenerTodosLosPedidos, cambiarEstadoPedido, liberarMesa as liberarMesaServicio } from "../services/pedidos";
+import { FaUserTie, FaSignOutAlt, FaChair, FaBell, FaUtensils, FaUsers, FaClipboardList, FaCheckCircle, FaTruck, FaClock, FaTimes } from "react-icons/fa";
 
 const normalizarEstado = (estado = "") => String(estado).toUpperCase();
 
@@ -14,6 +16,9 @@ function Panel_Mesero({ usuario, setPagina }) {
   const [mesaPedidoActiva, setMesaPedidoActiva] = useState(null);
   const [cargandoPedido, setCargandoPedido] = useState(false);
   const [actualizandoEstado, setActualizandoEstado] = useState(false);
+  const [mostrarPedidosListos, setMostrarPedidosListos] = useState(false);
+  const [pedidosListos, setPedidosListos] = useState([]);
+  const [cargandoPedidosListos, setCargandoPedidosListos] = useState(false);
 
   if (!usuario) {
     const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"));
@@ -40,9 +45,34 @@ function Panel_Mesero({ usuario, setPagina }) {
     }
   };
 
+  const obtenerPedidosListosRecoger = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      
+      const res = await api.get("/mesas/pedidos/listos-recoger", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPedidosListos(res.data?.datos || []);
+    } catch (error) {
+      console.error("Error al obtener pedidos listos:", error);
+    }
+  };
+
   useEffect(() => {
     cargarDatosPanel();
   }, []);
+
+  useEffect(() => {
+    if (!mostrarPedidosListos) return;
+    
+    // Obtener datos inmediatamente
+    obtenerPedidosListosRecoger();
+    
+    // Luego cada 30 segundos
+    const intervalo = setInterval(obtenerPedidosListosRecoger, 30000);
+    return () => clearInterval(intervalo);
+  }, [mostrarPedidosListos]);
 
   const cerrarSesion = () => {
     localStorage.removeItem("usuario");
@@ -128,19 +158,19 @@ function Panel_Mesero({ usuario, setPagina }) {
   return (
     <div className="Panel-container">      
       <div className="header">
-        <h1 className="titulo-panel">PANEL MESERO</h1>
+        <h1 className="titulo-panel"><FaUserTie /> PANEL MESERO</h1>
         <div className="perfil-info">
           <div>
             <span className="label-rol">MESERO ACTIVO</span>
             <h2 className="nombre-usuario">{usuario?.nombre}</h2>
           </div>
-          <button className="btn-salir-header" onClick={cerrarSesion}>SALIR</button>
+          <button className="btn-salir-header" onClick={cerrarSesion}><FaSignOutAlt /> SALIR</button>
         </div>
       </div>
 
       <div className='seccion-mesas'>
         <div className='titulo-seccion'>
-          <h3>MESAS</h3>
+          <h3><FaChair /> MESAS</h3>
         </div>
         <div className='mesas-grid'>
           {mesas.map((mesa) => (
@@ -154,7 +184,7 @@ function Panel_Mesero({ usuario, setPagina }) {
               }}
             >
               <span className='numero-mesa'>{mesa.numero}</span>
-              <span className='estado-texto'>{mesa.estado}</span>
+              <span className='estado-texto'><span className="mesa-status-dot"></span>{mesa.estado}</span>
               <button 
                 className="btn-cambiar-estado"
                 onClick={(e) => {
@@ -177,19 +207,19 @@ function Panel_Mesero({ usuario, setPagina }) {
 
       <div className='contenedor-mensajes'>
         <div className="btn-mensaje1" onClick={() => setPagina("mensajecliente")}>
-          <h3>Mensajes Clientes</h3>
+          <h3><FaUsers /> Mensajes Clientes</h3>
           <p className={countClientes > 0 ? "notificacion-activa" : ""}>{countClientes}</p>
         </div>
-        <div className="btn-mensaje2" onClick={() => setPagina("mensajecocina")}>
-          <h3>Mensajes Cocina</h3>
-          <p className={countCocina > 0 ? "notificacion-activa" : ""}>{countCocina}</p>
+        <div className="btn-mensaje2" onClick={() => setMostrarPedidosListos(true)}>
+          <h3><FaTruck /> Pedidos Listos</h3>
+          <p className={pedidosListos.length > 0 ? "notificacion-activa" : ""}>{pedidosListos.length}</p>
         </div>
       </div>
 
       <div className="Botones">
-        <button className="btn-1" onClick={() => setPagina("menuMesero")}>Tomar Pedido</button>
-        <button className="btn-2" onClick={() => setPagina("mensajecliente")}>Mensajes Clientes</button>
-        <button className="btn-3" onClick={() => setPagina("mensajecocina")}>Mensajes Cocina</button>
+        <button className="btn-1" onClick={() => setPagina("menuMesero")}><FaClipboardList /> Tomar Pedido</button>
+        <button className="btn-2" onClick={() => setPagina("mensajecliente")}><FaBell /> Mensajes Clientes</button>
+        <button className="btn-3" onClick={() => setMostrarPedidosListos(true)}><FaTruck /> Pedidos Listos</button>
       </div>
 
       {mesaPedidoActiva && pedidoActivo && (
@@ -216,16 +246,16 @@ function Panel_Mesero({ usuario, setPagina }) {
               <p><strong>Estado:</strong> {estadoActual}</p>
               <p><strong>Total:</strong> ${Number(pedidoActivo.total || 0).toLocaleString("es-CO")}</p>
 
-              <div style={{ marginTop: "0.8rem" }}>
-                <p style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Detalles</p>
+              <div className="mesero-modal-detalles">
+                <p className="mesero-modal-detalles-titulo">Detalles</p>
                 {(pedidoActivo.detalles || []).map((d) => (
-                  <div key={d.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.12)", padding: "0.45rem 0" }}>
+                  <div key={d.id} className="mesero-modal-detalle-item">
                     <div>{d.cantidad}x {d.platillo_nombre}</div>
-                    <div style={{ color: "#ddd", fontSize: "0.9rem" }}>
+                    <div className="mesero-modal-detalle-subtotal">
                       Subtotal: ${Number(d.subtotal || 0).toLocaleString("es-CO")}
                     </div>
                     {d.notas && (
-                      <div style={{ color: "#bbb", fontSize: "0.85rem" }}>Nota: {d.notas}</div>
+                      <div className="mesero-modal-detalle-nota">Nota: {d.notas}</div>
                     )}
                   </div>
                 ))}
@@ -235,7 +265,7 @@ function Panel_Mesero({ usuario, setPagina }) {
               })()}
             </div>
 
-            <div className="emp-modal-footer" style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+            <div className="emp-modal-footer mesero-modal-footer-actions">
               <button
                 className="emp-btn-cancelar"
                 onClick={() => {
@@ -247,11 +277,11 @@ function Panel_Mesero({ usuario, setPagina }) {
                 Cerrar
               </button>
               <button
-                style={{ background: "#3b82f6", color: "white", border: "none", borderRadius: "6px", padding: "0.6rem 1rem", cursor: "pointer", fontWeight: "bold", flex: "1", minWidth: "120px" }}
+                className="mesero-btn-editar"
                 onClick={editarPedido}
                 disabled={actualizandoEstado || normalizarEstado(pedidoActivo.estado) !== "PENDIENTE"}
               >
-                ✏️ Editar Pedido
+                Editar Pedido
               </button>
               <button
                 className="emp-btn-eliminar-modal"
@@ -271,12 +301,11 @@ function Panel_Mesero({ usuario, setPagina }) {
               )}
               {normalizarEstado(pedidoActivo.estado) === "ENTREGADO" && (
                 <button
-                  className="emp-btn-guardar"
+                  className="emp-btn-guardar mesero-btn-pagado"
                   onClick={() => actualizarEstadoPedido("PAGADO")}
                   disabled={actualizandoEstado}
-                  style={{ background: "#10b981" }}
                 >
-                  {actualizandoEstado ? "Procesando..." : "✓ PAGADO Y LIBERAR"}
+                  {actualizandoEstado ? "Procesando..." : "PAGADO Y LIBERAR"}
                 </button>
               )}
             </div>
@@ -298,17 +327,17 @@ function Panel_Mesero({ usuario, setPagina }) {
               <p className="emp-modal-nombre">Mesa #{mesaPedidoActiva.numero}</p>
             </div>
 
-            <div className="emp-modal-body" style={{ textAlign: "center", padding: "2rem 1rem" }}>
-              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>✓</div>
-              <p style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#10b981", marginBottom: "1rem" }}>
+            <div className="emp-modal-body mesero-modal-success">
+              <div className="mesero-modal-success-icon"><FaCheckCircle /></div>
+              <p className="mesero-modal-success-title">
                 ¡El pedido ha sido completado!
               </p>
-              <p style={{ fontSize: "0.95rem", color: "#bbb", marginBottom: "1rem" }}>
+              <p className="mesero-modal-success-desc">
                 No hay pedido activo. Si los comensales ya se retiraron, puedes liberar la mesa manualmente.
               </p>
             </div>
 
-            <div className="emp-modal-footer" style={{ display: "flex", gap: "0.6rem" }}>
+            <div className="emp-modal-footer mesero-modal-footer-actions">
               <button
                 className="emp-btn-cancelar"
                 onClick={() => {
@@ -319,10 +348,9 @@ function Panel_Mesero({ usuario, setPagina }) {
                 Volver
               </button>
               <button
-                className="emp-btn-guardar"
+                className="emp-btn-guardar mesero-btn-liberar"
                 onClick={liberarMesa}
                 disabled={actualizandoEstado}
-                style={{ flex: 1, background: "#10b981" }}
               >
                 {actualizandoEstado ? "Liberando..." : "Liberar Mesa"}
               </button>
@@ -333,8 +361,91 @@ function Panel_Mesero({ usuario, setPagina }) {
 
       {cargandoPedido && (
         <div className="emp-modal-overlay">
-          <div className="emp-modal" style={{ textAlign: "center" }}>
+          <div className="emp-modal mesero-loading-modal">
             Cargando pedido activo...
+          </div>
+        </div>
+      )}
+
+      {mostrarPedidosListos && (
+        <div
+          className="emp-modal-overlay"
+          onClick={() => setMostrarPedidosListos(false)}
+        >
+          <div className="mesero-modal-listos" onClick={(e) => e.stopPropagation()}>
+            <div className="mesero-listos-header">
+              <h2 className="mesero-listos-titulo"><FaTruck /> Pedidos Listos para Recoger</h2>
+              <button
+                className="mesero-listos-close"
+                onClick={() => setMostrarPedidosListos(false)}
+                title="Cerrar"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="mesero-listos-body">
+              {cargandoPedidosListos && (
+                <div className="mesero-listos-loading">Cargando...</div>
+              )}
+
+              {!cargandoPedidosListos && pedidosListos.length === 0 && (
+                <div className="mesero-listos-empty">
+                  <p>✓ No hay pedidos listos para recoger</p>
+                </div>
+              )}
+
+              {!cargandoPedidosListos && pedidosListos.length > 0 && (
+                <div className="mesero-listos-grid">
+                  {pedidosListos.map((pedido) => (
+                    <div key={pedido.id} className="mesero-listo-card">
+                      <div className="mesero-listo-header">
+                        <span className="mesero-listo-mesa">Mesa #{pedido.mesa_numero}</span>
+                        <span className="mesero-listo-tiempo">
+                          <FaClock /> {pedido.minutos_transcurridos} min
+                        </span>
+                      </div>
+
+                      <div className="mesero-listo-info">
+                        <p className="mesero-listo-mesero">
+                          Mesero: {pedido.mesero_nombre} {pedido.mesero_apellido}
+                        </p>
+                        <p className="mesero-listo-total">
+                          Total: ${Number(pedido.total || 0).toLocaleString("es-CO")}
+                        </p>
+                      </div>
+
+                      <div className="mesero-listo-items">
+                        <p className="mesero-listo-items-title">Platillos:</p>
+                        {(pedido.detalles || []).map((detalle, idx) => (
+                          <div key={idx} className="mesero-listo-item">
+                            <span className="mesero-listo-item-qty">{detalle.cantidad}x</span>
+                            <span className="mesero-listo-item-name">{detalle.platillo_nombre}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        className="mesero-listo-btn-recoger"
+                        onClick={() => alert(`Pedido #${pedido.id} de Mesa #${pedido.mesa_numero} listo para recoger`)}
+                      >
+                        <FaCheckCircle /> Listo para Recoger
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mesero-listos-footer">
+              <button
+                className="mesero-listos-actualizar"
+                onClick={obtenerPedidosListosRecoger}
+              >
+                Actualizar Ahora
+              </button>
+              <p className="mesero-listos-auto-refresh">Se actualiza automáticamente cada 30 segundos</p>
+            </div>
           </div>
         </div>
       )}

@@ -9,7 +9,7 @@
   background-position: center;
   background-attachment: fixed;
   color: white;
-  font-family: sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 32px 24px 60px;
   display: flex;
   flex-direction: column;
@@ -27,7 +27,7 @@
 .mco-titulo {
   font-size: 2rem;
   color: #c56322;
-  font-family: serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   margin: 0 0 4px;
@@ -151,7 +151,7 @@
 }
 
 .mco-detalle-nombre {
-  color: #e6d2c1;
+  color: #faf8f3;
   font-size: 0.95rem;
   font-weight: bold;
 }
@@ -163,7 +163,7 @@
   background: rgba(255,255,255,0.04);
   padding: 4px 8px;
   border-radius: 6px;
-  border-left: 2px solid #c58c22;
+  border-left: 2px solid #d4af37;
 }
 
 .mco-detalle-precio {
@@ -183,8 +183,8 @@
 .mco-btn-entregar {
   width: 100%;
   padding: 14px;
-  background: #c57922;
-  color: #000;
+  background: #d4af37;
+  color: #1a1a1a;
   border: none;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -194,7 +194,7 @@
   cursor: pointer;
   transition: 0.2s, transform 0.1s;
 }
-.mco-btn-entregar:hover  { background: #a35a16; color: #fff; }
+.mco-btn-entregar:hover  { background: #c9a877; color: #faf8f3; }
 .mco-btn-entregar:active { transform: scale(0.98); }
 
 /* ── Vacío ── */
@@ -211,8 +211,8 @@
 /* ── Botón volver ── */
 .mco-btn-volver {
   margin-top: 36px;
-  background: #b59981;
-  color: #000;
+  background: #8b7355;
+  color: #faf8f3;
   border: none;
   padding: 12px 32px;
   border-radius: 999px;
@@ -223,4 +223,4 @@
   cursor: pointer;
   transition: 0.2s;
 }
-.mco-btn-volver:hover { background: #e6d2c1; }
+.mco-btn-volver:hover { background: #c9a877; }

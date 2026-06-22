@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react"
 import api, { normalizarRol } from "../services/api"
 import '../styles/Login.css'; // Importamos la nueva hoja de estilo
@@ -56,10 +57,14 @@ function Login({ setPagina, setUsuario }) {
 
   return (
     <div className='login-page-container'>
-      
+      <div className="login-ambient-texture" aria-hidden="true"></div>
+
       {/* FORMULARIO EMPLEADOS / ADMIN */}
       <form className='login-form-staff' onSubmit={handleSubmit}>
+        <span className="login-chip">Zona de personal</span>
         <h2 className='login-title-staff'>Inicio de Sesión</h2>
+        <p className="login-subtitle-staff">Ingresa para gestionar pedidos en tiempo real.</p>
+
         <input 
           type="text" 
           placeholder="Nombre de usuario" 
@@ -78,17 +83,31 @@ function Login({ setPagina, setUsuario }) {
 
         <button type="submit" className="login-button-staff">Siguiente</button>
         
-        <p className="login-forgot-pass" onClick={() => setPagina("recuperacion")}>
+        <button
+          type="button"
+          className="login-forgot-pass"
+          onClick={() => setPagina("recuperacion")}
+        >
           Recuperación contraseña
-        </p>
+        </button>
       </form>
 
       {/* FORMULARIO CLIENTE */}
       <form className="login-form-client" onSubmit={handleIngresoCliente}>
+        <span className="login-chip">Acceso clientes</span>
         <h2 className="login-title-client">Menú Digital - Cliente</h2>
+        <p className="login-subtitle-client">Explora el menú y registra tus PQRS de forma rápida.</p>
 
         <button type="submit" className="login-button-client">
           Ver Menú
+        </button>
+
+        <button 
+          type="button"
+          className="login-button-pqrs"
+          onClick={() => setPagina("registro-pqrs")}
+        >
+          Registrar PQRS
         </button>
       </form>
     </div>

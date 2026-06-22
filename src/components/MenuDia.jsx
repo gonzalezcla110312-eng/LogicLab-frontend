@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { construirUrlImagen } from '../services/api';
 import { obtenerMenuDia } from '../services/menuDia';
@@ -48,6 +49,7 @@ function MenuDia({ setPagina }) {
 
   return (
     <div className="menu-container">
+      <p className="menu-kicker">Servicio de salón</p>
       <h2 className="menu-title">MENÚ DEL DÍA</h2>
       <span className="menu-fecha-badge">{hoy}</span>
 
@@ -63,8 +65,8 @@ function MenuDia({ setPagina }) {
             <div className="menu-seccion">
               <h3 className="menu-seccion-titulo">Platos</h3>
               <div className="menu-cards-grid">
-                {menuPlatos.map((plato, i) => (
-                  <div key={i} className="menu-plato-card">
+                {menuPlatos.map((plato) => (
+                  <div key={plato.id} className="menu-plato-card">
                     <img
                       src={construirUrlImagen(plato.imagen_url) || (IMG_CATEGORIA[plato.CategoriaId] ?? "/CartaCorriente.png")}
                       alt={plato.NombrePlato}
@@ -85,8 +87,8 @@ function MenuDia({ setPagina }) {
             <div className="menu-seccion">
               <h3 className="menu-seccion-titulo">Bebidas</h3>
               <div className="menu-cards-grid">
-                {menuBebidas.map((plato, i) => (
-                  <div key={i} className="menu-plato-card">
+                {menuBebidas.map((plato) => (
+                  <div key={plato.id} className="menu-plato-card">
                     <img
                       src={construirUrlImagen(plato.imagen_url) || IMG_CATEGORIA["4"]}
                       alt={plato.NombrePlato}
@@ -123,7 +125,7 @@ function MenuDia({ setPagina }) {
       )}
 
       <div className="footer-menu">
-        <button className="btn-volver" onClick={() => setPagina("mesero")}>
+        <button className="menu-btn-volver" onClick={() => setPagina("mesero")}>
           ← VOLVER
         </button>
       </div>
