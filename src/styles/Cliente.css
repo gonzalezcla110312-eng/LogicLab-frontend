@@ -1,16 +1,16 @@
-/*Incio estilos cliente */
+﻿/*Incio estilos cliente */
 
 * { box-sizing: border-box; }
 
 .vc-container {
   min-height: 100vh;
-  background-color: #0f0f0f;
+  background: linear-gradient(145deg, #181111 0%, #2b1514 56%, #1d1311 100%);
   color: white;
-  font-family: sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 24px;
 }
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 .vc-header {
   display: flex;
   justify-content: space-between;
@@ -29,26 +29,32 @@
 
 .vc-logo {
   font-size: 1.6rem;
-  color: #e6d2c1;
-  font-family: serif;
+  color: #ffb791;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   letter-spacing: 1px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .vc-menu-dia-label {
   font-size: 0.9rem;
-  color: #ff8c00;
+  color: #d4af37;
   margin: 0;
   letter-spacing: 3px;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .vc-badge-mesa {
   display: inline-block;
-  background-color: #ff8c00;
-  color: #000;
+  background-color: #d4af37;
+  color: #1a1a1a;
   padding: 3px 12px;
-  border-radius: 5px;
+  border-radius: 4px;
   font-size: 0.8rem;
   font-weight: bold;
   flex-shrink: 0;
@@ -69,7 +75,7 @@
 }
 .vc-btn-salir:hover { background: rgba(239,68,68,0.1); }
 
-/* ── Secciones ── */
+/* â”€â”€ Secciones â”€â”€ */
 .vc-seccion { margin-bottom: 40px; }
 
 .vc-seccion-titulo {
@@ -82,14 +88,14 @@
   border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
-/* ── Grid 3 columnas ── */
+/* â”€â”€ Grid 3 columnas â”€â”€ */
 .vc-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 
-/* ── Tarjeta vertical ── */
+/* â”€â”€ Tarjeta vertical â”€â”€ */
 .vc-tarjeta {
   background: #1a1a1a;
   border: 2px solid transparent;
@@ -140,7 +146,7 @@
 .vc-tarjeta-nombre {
   font-weight: bold;
   font-size: 0.9rem;
-  color: #e6d2c1;
+  color: #faf8f3;
   margin: 0;
   line-height: 1.3;
   text-align: center;
@@ -212,7 +218,7 @@
   transition: 0.2s;
   white-space: nowrap;
 }
-.vc-tarjeta-btn:hover { background: #ff6600; color: #fff; }
+.vc-tarjeta-btn:hover { background: #d4af37; color: #1a1a1a; }
 
 .vc-tarjeta-btn-quitar {
   background: #e74c3c;
@@ -246,7 +252,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Pedido / Carrito ── */
+/* â”€â”€ Pedido / Carrito â”€â”€ */
 .vc-pedido {
   background: #1a1a1a;
   border: 1px solid rgba(222, 168, 74, 0.25);
@@ -293,7 +299,7 @@
 }
 
 .vc-pedido-nombre {
-  color: #e6d2c1;
+  color: #faf8f3;
   font-size: 0.88rem;
   font-weight: bold;
 }
@@ -342,10 +348,10 @@
   transition: background 0.2s;
   box-shadow: 0 0 15px rgba(222, 168, 74, 0.25);
 }
-.vc-btn-enviar:hover    { background: #ff6600; color: #fff; }
+.vc-btn-enviar:hover    { background: #d4af37; color: #1a1a1a; }
 .vc-btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ── Sin menú ── */
+/* â”€â”€ Sin menÃº â”€â”€ */
 .vc-vacio {
   text-align: center;
   padding: 80px 20px;

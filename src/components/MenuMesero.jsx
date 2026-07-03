@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useMemo, useState } from "react";
 import api, { construirUrlImagen } from "../services/api";
 import { obtenerMenuDia } from "../services/menuDia";
 import { actualizarPedido } from "../services/pedidos";
-import "../styles/Cliente.css";
+import "../styles/MenuMesero.css";
 import "../App.css";
+import { FaArrowLeft, FaUtensils, FaShoppingCart, FaPlus, FaMinus, FaTrash, FaCheckCircle, FaPencilAlt } from "react-icons/fa";
 
 const IMG_CATEGORIA = {
   "1": "/CartaCorriente.png",
@@ -22,9 +24,35 @@ function MenuMesero({ usuario, setPagina }) {
   const [carrito, setCarrito] = useState([]);
   const [enviando, setEnviando] = useState(false);
   const [editandoPedidoId, setEditandoPedidoId] = useState(null);
-  const [cargandoPedido, setCargandoPedido] = useState(false);
 
   const usuarioActivo = usuario || JSON.parse(localStorage.getItem("usuario") || "null");
+
+  const cargarPedidoExistente = async (menu) => {
+    const pedidoIdEditar = localStorage.getItem("pedidoIdEditar");
+    if (!pedidoIdEditar || !menu || menu.length === 0) return;
+    
+    try {
+      const resPedido = await api.get(`/mesas/pedidos/${pedidoIdEditar}`);
+      const pedidoData = resPedido.data?.datos || {};
+      
+      if (pedidoData.detalles && Array.isArray(pedidoData.detalles)) {
+        const itemsCarrito = pedidoData.detalles.map((d) => {
+          const platoEnMenu = menu.find((p) => getPlatoId(p) === d.platillo_id);
+          return {
+            plato: platoEnMenu || { platillo_id: d.platillo_id, NombrePlato: d.platillo_nombre, Precio: 0, Descripcion: "", CategoriaId: "" },
+            cantidad: d.cantidad,
+            nota: d.notas || "",
+          };
+        });
+        setCarrito(itemsCarrito);
+        setEditandoPedidoId(pedidoIdEditar);
+      }
+    } catch (error_) {
+      console.error("Error cargando pedido:", error_);
+    } finally {
+      localStorage.removeItem("pedidoIdEditar");
+    }
+  };
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -43,31 +71,7 @@ function MenuMesero({ usuario, setPagina }) {
           setMesaSeleccionadaId(String(mesaGuardada));
         }
 
-        // Cargar pedido existente si se está editando
-        const pedidoIdEditar = localStorage.getItem("pedidoIdEditar");
-        if (pedidoIdEditar && menu && menu.length > 0) {
-          try {
-            const resPedido = await api.get(`/mesas/pedidos/${pedidoIdEditar}`);
-            const pedidoData = resPedido.data?.datos || {};
-            
-            if (pedidoData.detalles && Array.isArray(pedidoData.detalles)) {
-              const itemsCarrito = pedidoData.detalles.map((d) => {
-                const platoEnMenu = menu.find((p) => getPlatoId(p) === d.platillo_id);
-                return {
-                  plato: platoEnMenu || { platillo_id: d.platillo_id, NombrePlato: d.platillo_nombre, Precio: 0, Descripcion: "", CategoriaId: "" },
-                  cantidad: d.cantidad,
-                  nota: d.notas || "",
-                };
-              });
-              setCarrito(itemsCarrito);
-              setEditandoPedidoId(pedidoIdEditar);
-            }
-          } catch (errPedido) {
-            console.error("Error cargando pedido:", errPedido);
-          } finally {
-            localStorage.removeItem("pedidoIdEditar");
-          }
-        }
+        await cargarPedidoExistente(menu);
       } catch (error) {
         console.error("Error cargando menu y mesas:", error);
       }
@@ -199,17 +203,39 @@ function MenuMesero({ usuario, setPagina }) {
 
   const formatPrecio = (precio) => `$${Number(precio).toLocaleString("es-CO")}`;
 
+  const getButtonText = () => {
+    if (enviando) {
+      if (editandoPedidoId) {
+        return <>Actualizando...</>;
+      }
+      return <>Creando...</>;
+    }
+    if (editandoPedidoId) {
+      return <>Actualizar Pedido</>;
+    }
+    return <>
+      <FaCheckCircle /> Crear Pedido
+    </>;
+  };
+
   return (
     <div className="vc-container">
       <header className="vc-header">
-        <span className="vc-badge-mesa">
-          {mesaSeleccionada ? `Mesa #${mesaSeleccionada.numero}` : "Selecciona mesa"}
-        </span>
+        <button className="vc-btn-volver" onClick={() => setPagina("mesero")} title="Volver al panel de mesero">
+          <FaArrowLeft /> Volver
+        </button>
         <div className="vc-header-center">
-          <h1 className="vc-logo">Menu Mesero</h1>
-          <p className="vc-menu-dia-label">Crear Pedido</p>
+          <h1 className="vc-logo"><FaUtensils /> Tomar Pedido</h1>
+          <p className="vc-menu-dia-label">Menú del día</p>
+          {mesaSeleccionada && (
+            <span className="vc-badge-mesa">
+              Mesa #{mesaSeleccionada.numero}
+            </span>
+          )}
         </div>
-        <button className="vc-btn-salir" onClick={() => setPagina("mesero")}>VOLVER</button>
+        <div className="vc-carrito-badge">
+          <FaShoppingCart /> {carrito.length}
+        </div>
       </header>
 
       <section className="vc-seccion" style={{ paddingTop: "0.75rem" }}>
@@ -220,15 +246,7 @@ function MenuMesero({ usuario, setPagina }) {
             setMesaSeleccionadaId(e.target.value);
             localStorage.setItem("mesaSeleccionadaId", e.target.value);
           }}
-          style={{
-            width: "100%",
-            maxWidth: "320px",
-            padding: "0.7rem 0.9rem",
-            borderRadius: "12px",
-            border: "1px solid rgba(255,255,255,0.2)",
-            background: "rgba(0,0,0,0.25)",
-            color: "#fff",
-          }}
+          className="vc-mesa-select"
         >
           <option value="">-- Elige tu Mesa --</option>
           {mesas
@@ -261,15 +279,15 @@ function MenuMesero({ usuario, setPagina }) {
 
                     <div className="vc-tarjeta-bottom">
                       <div className="vc-tarjeta-cantidad">
-                        <button className="vc-cant-btn" onClick={() => cambiarCantidad(platilloId, -1)}>−</button>
+                        <button className="vc-cant-btn" onClick={() => cambiarCantidad(platilloId, -1)}><FaMinus /></button>
                         <span className="vc-cant-num">{getCantidad(platilloId)}</span>
-                        <button className="vc-cant-btn" onClick={() => cambiarCantidad(platilloId, 1)}>+</button>
+                        <button className="vc-cant-btn" onClick={() => cambiarCantidad(platilloId, 1)}><FaPlus /></button>
                       </div>
                       <button
                         className={`vc-tarjeta-btn ${agregado ? "vc-tarjeta-btn-quitar" : ""}`}
                         onClick={() => toggleCarrito(plato)}
                       >
-                        {agregado ? "Quitar" : "Agregar"}
+                        {agregado ? <><FaTrash /> Quitar</> : <>Agregar</>}
                       </button>
                     </div>
 
@@ -292,93 +310,53 @@ function MenuMesero({ usuario, setPagina }) {
       {carrito.length > 0 && (
         <section className="vc-pedido">
           <h2 className="vc-pedido-titulo">
-            {editandoPedidoId ? "✏️ Editar Pedido" : "Resumen del Pedido"}
+            {editandoPedidoId ? <><FaPencilAlt /> Editar Pedido</> : <><FaShoppingCart /> Resumen del Pedido</>}
           </h2>
           {carrito.map((item) => (
             <div
               key={getPlatoId(item.plato)}
-              className="vc-pedido-item"
-              style={{
-                background: editandoPedidoId ? "rgba(59, 130, 246, 0.1)" : "inherit",
-                borderLeft: editandoPedidoId ? "4px solid #3b82f6" : "inherit",
-                paddingLeft: editandoPedidoId ? "0.75rem" : "inherit",
-              }}
+              className={`vc-pedido-item ${editandoPedidoId ? "vc-pedido-item-edit" : ""}`}
             >
               <div className="vc-pedido-item-info" style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <div className="vc-pedido-item-header">
                   <span className="vc-pedido-nombre">{item.plato.NombrePlato}</span>
                   <button
                     onClick={() => removerDelCarrito(getPlatoId(item.plato))}
-                    style={{
-                      background: "#ef4444",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "6px",
-                      padding: "0.4rem 0.8rem",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                      fontWeight: "bold",
-                    }}
+                    className="vc-pedido-btn-quitar"
                   >
-                    ✕ Quitar
+                    <FaTrash />
                   </button>
                 </div>
 
-                {/* Cantidad editable */}
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <span style={{ fontSize: "0.9rem", color: "#bbb" }}>Cantidad:</span>
+                <div className="vc-pedido-cantidad-control">
+                  <span className="vc-pedido-label">Cantidad:</span>
                   <button
                     onClick={() => actualizarCantidadCarrito(getPlatoId(item.plato), item.cantidad - 1)}
-                    style={{
-                      background: "rgba(255,255,255,0.1)",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      padding: "0.3rem 0.6rem",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                    }}
+                    className="vc-pedido-cant-btn"
                   >
-                    −
+                    <FaMinus />
                   </button>
-                  <span style={{ minWidth: "30px", textAlign: "center", fontWeight: "bold" }}>
+                  <span className="vc-pedido-cant-num">
                     {item.cantidad}
                   </span>
                   <button
                     onClick={() => actualizarCantidadCarrito(getPlatoId(item.plato), item.cantidad + 1)}
-                    style={{
-                      background: "rgba(255,255,255,0.1)",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      padding: "0.3rem 0.6rem",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                    }}
+                    className="vc-pedido-cant-btn"
                   >
-                    +
+                    <FaPlus />
                   </button>
                 </div>
 
-                {/* Notas editables */}
                 <input
                   type="text"
                   placeholder="Notas para cocina (opcional)"
                   value={item.nota}
                   onChange={(e) => actualizarNotaCarrito(getPlatoId(item.plato), e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    borderRadius: "6px",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    background: "rgba(0,0,0,0.25)",
-                    color: "white",
-                    fontSize: "0.85rem",
-                  }}
+                  className="vc-pedido-nota-input"
                 />
 
                 {item.nota && (
-                  <span className="vc-pedido-peticion" style={{ marginTop: "0.3rem", display: "block" }}>
+                  <span className="vc-pedido-nota-display">
                     → {item.nota}
                   </span>
                 )}
@@ -392,14 +370,14 @@ function MenuMesero({ usuario, setPagina }) {
             </div>
           ))}
 
-          <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.2)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", fontSize: "1.1rem", fontWeight: "bold" }}>
+          <div className="vc-pedido-footer">
+            <div className="vc-pedido-total">
               <span>Total:</span>
               <span>{formatPrecio(carrito.reduce((sum, item) => sum + item.plato.Precio * item.cantidad, 0))}</span>
             </div>
 
-            <button className="vc-btn-enviar" onClick={crearOActualizarPedido} disabled={enviando || cargandoPedido}>
-              {enviando ? (editandoPedidoId ? "Actualizando..." : "Creando...") : (editandoPedidoId ? "✏️ Actualizar Pedido" : "✓ Crear Pedido (PENDIENTE)")}
+            <button className="vc-btn-enviar" onClick={crearOActualizarPedido} disabled={enviando}>
+              {getButtonText()}
             </button>
           </div>
         </section>

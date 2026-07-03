@@ -11,7 +11,7 @@
   background-position: center;
   background-attachment: fixed;
   color: white;
-  font-family: sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 32px 24px 60px;
   display: flex;
   flex-direction: column;
@@ -28,8 +28,8 @@
 
 .mc-titulo {
   font-size: 2rem;
-  color: #ff8c00;
-  font-family: serif;
+  color: #d4af37;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   margin: 0 0 8px;
@@ -38,7 +38,7 @@
 .mc-titulo-linea {
   height: 3px;
   width: 80px;
-  background: #b59981;
+  background: #8b7355;
   border-radius: 99px;
   margin: 0 auto;
 }
@@ -62,7 +62,7 @@
 }
 
 .mc-card:hover {
-  border-color: rgba(255, 140, 0, 0.5);
+  border-color: rgba(212, 175, 55, 0.5);
 }
 
 /* Cabecera de card */
@@ -70,14 +70,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(255, 140, 0, 0.08);
+  background: rgba(212, 175, 55, 0.08);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   padding: 14px 20px;
 }
 
 .mc-badge-mesa {
-  background: #ff8c00;
-  color: #000;
+  background: #d4af37;
+  color: #1a1a1a;
   font-weight: 900;
   font-size: 0.78rem;
   padding: 4px 14px;
@@ -138,7 +138,7 @@
 }
 
 .mc-detalle-nombre {
-  color: #e6d2c1;
+  color: #faf8f3;
   font-size: 0.9rem;
   font-weight: bold;
 }
@@ -166,8 +166,8 @@
 .mc-btn-confirmar {
   width: 100%;
   padding: 13px;
-  background: #ff8c00;
-  color: #000;
+  background: #d4af37;
+  color: #1a1a1a;
   border: none;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -178,7 +178,7 @@
   transition: background 0.2s, transform 0.1s;
 }
 
-.mc-btn-confirmar:hover  { background: #ffb347; }
+.mc-btn-confirmar:hover  { background: #c9a877; }
 .mc-btn-confirmar:active { transform: scale(0.98); }
 
 /* ── Vacío ── */
@@ -196,8 +196,8 @@
 /* ── Botón volver ── */
 .mc-btn-volver {
   margin-top: 36px;
-  background: #b59981;
-  color: #000;
+  background: #8b7355;
+  color: #faf8f3;
   border: none;
   padding: 12px 32px;
   border-radius: 999px;
@@ -209,4 +209,4 @@
   transition: background 0.2s;
 }
 
-.mc-btn-volver:hover { background: #e6d2c1; }
+.mc-btn-volver:hover { background: #c9a877; }

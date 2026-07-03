@@ -7,6 +7,8 @@ import Panel_Administrador from './components/Admin/Panel_Administrador'
 import Empleados from './components/Admin/Empleados'
 import Platos from './components/Admin/Platos'
 import Menus from './components/Admin/Menus'
+import Pqrs from './components/Admin/Pqrs'
+import RegistroPQRS from './components/RegistroPQRS'
 import MenuDia from './components/MenuDia'
 import MenuMesero from './components/MenuMesero'
 import EditarPedido from './components/EditarPedido'
@@ -14,7 +16,7 @@ import Recuperacion from './components/Recuperacion'
 import MensajeCliente from './components/MensajeCliente'
 import MensajeCocina from './components/MensajeCocina'
 
-const PAGINAS_PUBLICAS = ["login", "recuperacion"]
+const PAGINAS_PUBLICAS = ["login", "recuperacion", "registro-pqrs"]
 
 function App() {
   const [pagina, setPagina] = useState("login")
@@ -62,10 +64,12 @@ function App() {
       {pagina === "empleados" && <Empleados {...props} />}
       {pagina === "platos" && <Platos {...props} />}
       {pagina === "menus" && <Menus {...props} />}
+      {pagina === "pqrs" && <Pqrs {...props} />}
       {pagina === "menu" && <MenuDia {...props} />}
       {pagina === "menuMesero" && <MenuMesero {...props} />}
       {pagina === "editarPedido" && <EditarPedido {...props} />}
       {pagina === "recuperacion" && <Recuperacion setPagina={cambiarPagina} />}
+      {pagina === "registro-pqrs" && <RegistroPQRS setPagina={cambiarPagina} />}
       {pagina === "mensajecliente" && <MensajeCliente setPagina={cambiarPagina} />}
       {pagina === "mensajecocina" && <MensajeCocina setPagina={cambiarPagina} />}
     </>
