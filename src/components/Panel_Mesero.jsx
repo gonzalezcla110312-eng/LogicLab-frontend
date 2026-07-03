@@ -55,6 +55,7 @@ function Panel_Mesero({ usuario, setPagina }) {
       const res = await api.get("/mesas/pedidos/listos-recoger", {
         headers: { Authorization: `Bearer ${token}` }
       });
+<<<<<<< HEAD
       const nuevosPedidos = res.data?.datos || [];
       setPedidosListos(nuevosPedidos);
       
@@ -63,6 +64,9 @@ function Panel_Mesero({ usuario, setPagina }) {
         reproducirNotificacionPedidosListos();
       }
       setUltimoConteoPedidosListos(nuevosPedidos.length);
+=======
+      setPedidosListos(res.data?.datos || []);
+>>>>>>> bff1d4b2e594698cdf995784fcc655791519d257
     } catch (error) {
       console.error("Error al obtener pedidos listos:", error);
     }
@@ -219,12 +223,16 @@ function Panel_Mesero({ usuario, setPagina }) {
           <h3><FaUsers /> Mensajes Clientes</h3>
           <p className={countClientes > 0 ? "notificacion-activa" : ""}>{countClientes}</p>
         </div>
+<<<<<<< HEAD
         <div className="btn-mensaje2" onClick={() => { 
           if (pedidosListos.length > 0) {
             reproducirNotificacionPedidosListos();
           }
           setMostrarPedidosListos(true);
         }}>
+=======
+        <div className="btn-mensaje2" onClick={() => setMostrarPedidosListos(true)}>
+>>>>>>> bff1d4b2e594698cdf995784fcc655791519d257
           <h3><FaTruck /> Pedidos Listos</h3>
           <p className={pedidosListos.length > 0 ? "notificacion-activa" : ""}>{pedidosListos.length}</p>
         </div>
@@ -233,12 +241,16 @@ function Panel_Mesero({ usuario, setPagina }) {
       <div className="Botones">
         <button className="btn-1" onClick={() => setPagina("menuMesero")}><FaClipboardList /> Tomar Pedido</button>
         <button className="btn-2" onClick={() => setPagina("mensajecliente")}><FaBell /> Mensajes Clientes</button>
+<<<<<<< HEAD
         <button className="btn-3" onClick={() => { 
           if (pedidosListos.length > 0) {
             reproducirNotificacionPedidosListos();
           }
           setMostrarPedidosListos(true);
         }}><FaTruck /> Pedidos Listos</button>
+=======
+        <button className="btn-3" onClick={() => setMostrarPedidosListos(true)}><FaTruck /> Pedidos Listos</button>
+>>>>>>> bff1d4b2e594698cdf995784fcc655791519d257
       </div>
 
       {mesaPedidoActiva && pedidoActivo && (

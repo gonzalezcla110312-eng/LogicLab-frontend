@@ -51,12 +51,15 @@ function Panel_Cocinero({ usuario, setPagina }) {
     setProcesandoPedidoId(pedidoId);
     try {
       await cambiarEstadoPedido(pedidoId, estado);
+<<<<<<< HEAD
       
       // Reproducir timbre si es para entrega
       if (estado === "PARA_ENTREGA") {
         reproducirTimbre();
       }
       
+=======
+>>>>>>> bff1d4b2e594698cdf995784fcc655791519d257
       await cargarPedidosCocina();
     } catch (error) {
       alert(error?.response?.data?.error || "No se pudo actualizar el estado del pedido");
