@@ -1,7 +1,9 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react"
 import Empleados from './Empleados'
 import Platos from './Platos'
 import Menus from './Menus'
+import Pqrs from './Pqrs'
 import '../../styles/Administrador.css';
 import '../../App.css';
 import api from "../../services/api";
@@ -87,6 +89,11 @@ function Panel_Administrador({usuario, setPagina}){
   const alertasPedidos = resumenDashboard.alertas_pedidos || [];
   const tendenciaPedidos = resumenDashboard.tendencia_pedidos || [];
   const formatPrecio = (precio) => `$${Number(precio).toLocaleString("es-CO")}`;
+  const hoyLabel = new Date().toLocaleDateString("es-CO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 
   return(
     <div className="admin-layout-container">
@@ -106,6 +113,7 @@ function Panel_Administrador({usuario, setPagina}){
           <button className={`menu-item ${seccion === "empleados" ? "active" : ""}`} onClick={() => setSeccion("empleados")}>Empleados</button>
           <button className={`menu-item ${seccion === "platos" ? "active" : ""}`} onClick={() => setSeccion("platos")}>Platos</button>
           <button className={`menu-item ${seccion === "menus" ? "active" : ""}`} onClick={() => setSeccion("menus")}>Menús</button>
+          <button className={`menu-item ${seccion === "pqrs" ? "active" : ""}`} onClick={() => setSeccion("pqrs")}>PQRS</button>
           <button className="menu-item">Ganancias</button>
           <button className="menu-item">Reservaciones</button>
         </nav>
@@ -120,170 +128,192 @@ function Panel_Administrador({usuario, setPagina}){
 
       <main className="admin-content-area">
         {seccion === "panel" && (
-          <div className="dashboard-grid">
-            <div className="stats-row">
-              <div className="stat-card">
-                <h3>Pedidos Realizados</h3>
-                <p className="stat-number">{pedidosRealizados}</p>
+          <div className="admin-dash-shell">
+            <header className="admin-dash-header">
+              <div>
+                <p className="admin-dash-kicker">Centro de control</p>
+                <h1 className="admin-dash-title">Dashboard Administrativo</h1>
+                <p className="admin-dash-subtitle">Resumen operativo de hoy, {hoyLabel}.</p>
               </div>
-              <div className="stat-card">
-                <h3>Ganancias de hoy</h3>
-                <p className="stat-number">{formatPrecio(gananciasHoy)} COP</p>
-              </div>
-              <div className="stat-card">
-                <h3>Total Entregados</h3>
-                <p className="stat-number">{totalEntregados}</p>
-              </div>
-            </div>
+            </header>
 
-            <div className="stats-row stats-row-extended">
-              <div className="stat-card">
-                <h3>Pedidos Cancelados</h3>
-                <p className="stat-number">{Number(estadisticas.pedidos_cancelados || 0)}</p>
-              </div>
-              <div className="stat-card">
-                <h3>En Proceso</h3>
-                <p className="stat-number">{Number(estadisticas.pedidos_en_proceso || 0)}</p>
-              </div>
-              <div className="stat-card">
-                <h3>Ticket Promedio</h3>
-                <p className="stat-number" style={{ fontSize: "1.7rem" }}>
-                  {formatPrecio(Number(ingresos.ticket_promedio || 0))}
-                </p>
-              </div>
-              <div className="stat-card">
-                <h3>Demora Prep. Prom</h3>
-                <p className="stat-number">{Number(estadisticas.promedio_demora_preparacion_min || 0).toFixed(1)}m</p>
-              </div>
-            </div>
+            <section className="admin-kpi-grid">
+              <article className="admin-kpi-card">
+                <p className="admin-kpi-label">Pedidos realizados</p>
+                <p className="admin-kpi-value">{pedidosRealizados}</p>
+              </article>
 
-            <div className="main-stats-row">
+              <article className="admin-kpi-card">
+                <p className="admin-kpi-label">Ganancias de hoy</p>
+                <p className="admin-kpi-value admin-kpi-value-money">{formatPrecio(gananciasHoy)} COP</p>
+              </article>
 
-              {/* ── MENU DEL DIA ── */}
-              <div className="info-box menu-dia">
-                <h2>MENU DEL DIA</h2>
+              <article className="admin-kpi-card">
+                <p className="admin-kpi-label">Total entregados</p>
+                <p className="admin-kpi-value">{totalEntregados}</p>
+              </article>
+
+              <article className="admin-kpi-card admin-kpi-card-soft">
+                <p className="admin-kpi-label">Pedidos cancelados</p>
+                <p className="admin-kpi-value">{Number(estadisticas.pedidos_cancelados || 0)}</p>
+              </article>
+
+              <article className="admin-kpi-card admin-kpi-card-soft">
+                <p className="admin-kpi-label">Pedidos en proceso</p>
+                <p className="admin-kpi-value">{Number(estadisticas.pedidos_en_proceso || 0)}</p>
+              </article>
+
+              <article className="admin-kpi-card admin-kpi-card-soft">
+                <p className="admin-kpi-label">Ticket promedio</p>
+                <p className="admin-kpi-value admin-kpi-value-money">{formatPrecio(Number(ingresos.ticket_promedio || 0))}</p>
+              </article>
+
+              <article className="admin-kpi-card admin-kpi-card-soft">
+                <p className="admin-kpi-label">Demora prep. promedio</p>
+                <p className="admin-kpi-value">{Number(estadisticas.promedio_demora_preparacion_min || 0).toFixed(1)}m</p>
+              </article>
+            </section>
+
+            <section className="admin-dash-two-col">
+              <article className="admin-panel-card">
+                <div className="admin-panel-card-head">
+                  <h2 className="admin-panel-card-title">Menú del día</h2>
+                  <span className="admin-panel-card-chip">{menuDelDia.length} ítems</span>
+                </div>
+
                 {menuDelDia.length === 0 ? (
-                  <div className="empty-placeholder">
-                    <p>Menú {`{Hoy}`}</p>
-                    <span>Sin platos asignados — ve a <strong>Menús</strong> para armar el menú</span>
+                  <div className="admin-empty-placeholder">
+                    <p>No hay menú cargado para hoy.</p>
+                    <span>Ve a la sección Menús para publicarlo.</span>
                   </div>
                 ) : (
-                  <div style={{ overflowY: "auto", maxHeight: "260px", paddingRight: "4px" }}>
+                  <div className="admin-scroll-list">
                     {menuPlatos.length > 0 && (
-                      <div style={{ marginBottom: "0.5rem" }}>
-                        <p style={{ color: "#e87d2a", fontSize: "0.8rem", fontWeight: "700", marginBottom: "0.3rem" }}>PLATOS</p>
-                        {menuPlatos.map((p, i) => (
-                          <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.07)", fontSize: "0.85rem" }}>
-                            <span style={{ color: "#eee" }}>{p.NombrePlato}</span>
-                            <span style={{ color: "#e87d2a", fontWeight: "600" }}>{formatPrecio(p.Precio)}</span>
+                      <div className="admin-list-group">
+                        <p className="admin-list-group-label">Platos</p>
+                        {menuPlatos.map((p) => (
+                          <div key={`plato-${p.id}-${p.NombrePlato}-${p.Precio}`} className="admin-list-row">
+                            <span>{p.NombrePlato}</span>
+                            <strong>{formatPrecio(p.Precio)}</strong>
                           </div>
                         ))}
                       </div>
                     )}
+
                     {menuBebidas.length > 0 && (
-                      <div>
-                        <p style={{ color: "#e87d2a", fontSize: "0.8rem", fontWeight: "700", marginBottom: "0.3rem" }}>BEBIDAS</p>
-                        {menuBebidas.map((p, i) => (
-                          <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.07)", fontSize: "0.85rem" }}>
-                            <span style={{ color: "#eee" }}>{p.NombrePlato}</span>
-                            <span style={{ color: "#e87d2a", fontWeight: "600" }}>{formatPrecio(p.Precio)}</span>
+                      <div className="admin-list-group">
+                        <p className="admin-list-group-label">Bebidas</p>
+                        {menuBebidas.map((p) => (
+                          <div key={`bebida-${p.id}-${p.NombrePlato}-${p.Precio}`} className="admin-list-row">
+                            <span>{p.NombrePlato}</span>
+                            <strong>{formatPrecio(p.Precio)}</strong>
                           </div>
                         ))}
                       </div>
                     )}
-                    <p style={{ color: "#888", fontSize: "0.75rem", marginTop: "0.5rem", textAlign: "right" }}>
-                      {menuDelDia.length} ítems en el menú
-                    </p>
                   </div>
                 )}
-              </div>
+              </article>
 
-              {/* ── MESAS OCUPADAS ── */}
-              <div className="info-box mesas-ocupadas">
-                <h2>Mesas Ocupadas</h2>
-                <div className="circle-progress">
-                  <svg viewBox="0 0 100 100" style={{ width: "120px", height: "120px" }}>
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#333" strokeWidth="10"/>
+              <article className="admin-panel-card admin-panel-card-center">
+                <div className="admin-panel-card-head">
+                  <h2 className="admin-panel-card-title">Mesas ocupadas</h2>
+                </div>
+
+                <div className="admin-circle-progress-wrap">
+                  <svg viewBox="0 0 100 100" className="admin-circle-progress-svg" aria-hidden="true">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#2f2625" strokeWidth="10" />
                     <circle
-                      cx="50" cy="50" r="40"
+                      cx="50"
+                      cy="50"
+                      r="40"
                       fill="none"
-                      stroke="#e87d2a"
+                      stroke="#ff7a35"
                       strokeWidth="10"
                       strokeDasharray={`${2 * Math.PI * 40}`}
                       strokeDashoffset={`${2 * Math.PI * 40 * (1 - porcentajeOcupadas / 100)}`}
                       strokeLinecap="round"
                       transform="rotate(-90 50 50)"
-                      style={{ transition: "stroke-dashoffset 0.5s ease" }}
+                      className="admin-circle-progress-fill"
                     />
-                    <text x="50" y="55" textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">
+                    <text x="50" y="55" textAnchor="middle" fill="#fff4ef" fontSize="22" fontWeight="bold">
                       {mesasOcupadas}
                     </text>
                   </svg>
                 </div>
-                <p>Mesas ocupadas</p>
-                <p style={{ color: "#888", fontSize: "0.8rem" }}>{mesasOcupadas} de {totalMesas} ({porcentajeOcupadas}%)</p>
-              </div>
-            </div>
 
-            <div className="main-stats-row">
-              <div className="info-box">
-                <h2>Top Platillos</h2>
+                <p className="admin-mesas-caption">{mesasOcupadas} de {totalMesas} mesas ocupadas</p>
+                <p className="admin-mesas-caption-soft">Ocupación actual: {porcentajeOcupadas}%</p>
+              </article>
+            </section>
+
+            <section className="admin-dash-two-col">
+              <article className="admin-panel-card">
+                <div className="admin-panel-card-head">
+                  <h2 className="admin-panel-card-title">Top platillos</h2>
+                </div>
+
                 {topPlatillos.length === 0 ? (
-                  <div className="empty-placeholder">Sin datos para el rango seleccionado</div>
+                  <div className="admin-empty-placeholder">Sin datos para el rango seleccionado</div>
                 ) : (
-                  <div style={{ maxHeight: "220px", overflowY: "auto", textAlign: "left" }}>
-                    {topPlatillos.map((p, i) => (
-                      <div key={`${p.platillo_id}-${i}`} style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "8px 0" }}>
+                  <div className="admin-scroll-list">
+                    {topPlatillos.map((p) => (
+                      <div key={`${p.platillo_id}-${p.platillo_nombre}`} className="admin-list-row">
                         <span>{p.platillo_nombre}</span>
-                        <span style={{ color: "#e87d2a", fontWeight: 700 }}>{p.cantidad_vendida}</span>
+                        <strong>{p.cantidad_vendida}</strong>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
+              </article>
 
-              <div className="info-box">
-                <h2>Alertas Pedidos</h2>
+              <article className="admin-panel-card">
+                <div className="admin-panel-card-head">
+                  <h2 className="admin-panel-card-title">Alertas de pedidos</h2>
+                </div>
+
                 {alertasPedidos.length === 0 ? (
-                  <div className="empty-placeholder">No hay pedidos abiertos fuera del umbral</div>
+                  <div className="admin-empty-placeholder">No hay pedidos fuera del umbral</div>
                 ) : (
-                  <div style={{ maxHeight: "220px", overflowY: "auto", textAlign: "left" }}>
+                  <div className="admin-scroll-list">
                     {alertasPedidos.map((a) => (
-                      <div key={a.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "8px 0" }}>
-                        <div style={{ fontWeight: 700 }}>Mesa #{a.mesa_numero}</div>
-                        <div style={{ color: "#bbb", fontSize: "0.85rem" }}>
-                          Pedido #{a.id} · {a.minutos_abierto} min abierto · {formatPrecio(a.total)}
-                        </div>
+                      <div key={a.id} className="admin-alert-row">
+                        <p className="admin-alert-title">Mesa #{a.mesa_numero} · Pedido #{a.id}</p>
+                        <p className="admin-alert-subtitle">{a.minutos_abierto} min abierto · {formatPrecio(a.total)}</p>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
-            </div>
+              </article>
+            </section>
 
-            <div className="info-box">
-              <h2>Tendencia Pedidos</h2>
+            <section className="admin-panel-card">
+              <div className="admin-panel-card-head">
+                <h2 className="admin-panel-card-title">Tendencia de pedidos</h2>
+              </div>
+
               {tendenciaPedidos.length === 0 ? (
-                <div className="empty-placeholder">Sin tendencia para el rango seleccionado</div>
+                <div className="admin-empty-placeholder">Sin tendencia para el rango seleccionado</div>
               ) : (
-                <div style={{ maxHeight: "180px", overflowY: "auto", textAlign: "left" }}>
+                <div className="admin-scroll-list admin-scroll-list-short">
                   {tendenciaPedidos.map((t) => (
-                    <div key={t.fecha} style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr 1fr 1fr", gap: "8px", borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "8px 0" }}>
+                    <div key={t.fecha} className="admin-trend-row">
                       <span>{t.fecha}</span>
                       <span>OK: {t.completados}</span>
                       <span>CAN: {t.cancelados}</span>
-                      <span>TOT: {t.total}</span>
+                      <strong>TOT: {t.total}</strong>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
+            </section>
           </div>
         )}
 
         {seccion === "empleados" && <Empleados usuario={usuario} />}
         {seccion === "platos" && <Platos />}
         {seccion === "menus" && <Menus />}
+        {seccion === "pqrs" && <Pqrs usuario={usuario} />}
       </main>
 
     </div>
