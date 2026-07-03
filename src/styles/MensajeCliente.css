@@ -1,0 +1,212 @@
+/* =============================================
+   MENSAJECLIENTE.CSS — Restaurante Mangata
+   ============================================= */
+
+* { box-sizing: border-box; }
+
+.mc-container {
+  min-height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.88)), url('/Fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 32px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ── */
+.mc-header {
+  width: 100%;
+  max-width: 720px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.mc-titulo {
+  font-size: 2rem;
+  color: #d4af37;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin: 0 0 8px;
+}
+
+.mc-titulo-linea {
+  height: 3px;
+  width: 80px;
+  background: #8b7355;
+  border-radius: 99px;
+  margin: 0 auto;
+}
+
+/* ── Lista de pedidos ── */
+.mc-lista {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Card ── */
+.mc-card {
+  background: rgba(20, 20, 20, 0.92);
+  border: 1px solid rgba(181, 153, 129, 0.35);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.mc-card:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+/* Cabecera de card */
+.mc-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(212, 175, 55, 0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 20px;
+}
+
+.mc-badge-mesa {
+  background: #d4af37;
+  color: #1a1a1a;
+  font-weight: 900;
+  font-size: 0.78rem;
+  padding: 4px 14px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+
+.mc-fecha {
+  flex: 1;
+  font-size: 0.72rem;
+  color: #666;
+}
+
+.mc-total-header {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #dea84a;
+  font-family: monospace;
+}
+
+/* Cuerpo de card */
+.mc-card-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mc-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mc-grupo-label {
+  font-size: 0.7rem;
+  color: #888;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.mc-detalle-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.mc-detalle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.mc-detalle-nombre {
+  color: #faf8f3;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.mc-detalle-nota {
+  color: #666;
+  font-size: 0.72rem;
+  font-style: italic;
+}
+
+.mc-detalle-precio {
+  color: #dea84a;
+  font-size: 0.88rem;
+  font-weight: bold;
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+/* Footer de card */
+.mc-card-footer {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.mc-btn-confirmar {
+  width: 100%;
+  padding: 13px;
+  background: #d4af37;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.mc-btn-confirmar:hover  { background: #c9a877; }
+.mc-btn-confirmar:active { transform: scale(0.98); }
+
+/* ── Vacío ── */
+.mc-vacio {
+  text-align: center;
+  padding: 80px 20px;
+  background: rgba(20,20,20,0.7);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.mc-vacio-icon { font-size: 3rem; margin-bottom: 12px; }
+.mc-vacio p    { color: #666; font-size: 1rem; margin: 0; }
+
+/* ── Botón volver ── */
+.mc-btn-volver {
+  margin-top: 36px;
+  background: #8b7355;
+  color: #faf8f3;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mc-btn-volver:hover { background: #c9a877; }

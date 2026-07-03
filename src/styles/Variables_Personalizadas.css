@@ -1,0 +1,18 @@
+:root {
+  /* Paleta Calida - Restaurante */
+  --color-primario: #c52b1f;      /* Rojo intenso */
+  --color-primario-hover: #e25a25;/* Naranja intenso */
+  --color-cafe-staff: #7a2b1a;    /* Vino tostado */
+  --color-cafe-claro: #fff3e8;    /* Crema claro */
+  
+  /* Colores de Estado */
+  --color-fondo-oscuro: #1a1312;
+  --color-disponible: #55efc4;
+  --color-ocupado: #ff7675;
+  --color-texto-claro: #ffffff;
+  --color-texto-gris: #cdaea1;
+
+  /* Fondos e Imágenes */
+  --fondo-principal: linear-gradient(135deg, #1a1211 0%, #2b1512 55%, #1f1411 100%);
+  --blur-efecto: blur(10px);
+}
