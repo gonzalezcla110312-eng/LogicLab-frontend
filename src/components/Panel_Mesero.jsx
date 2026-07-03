@@ -3,6 +3,7 @@ import '../styles/Mesero.css';
 import '../App.css';
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { reproducirTimbre, reproducirNotificacionPedidosListos } from "../services/sonidos";
 import { obtenerMesas, obtenerTodosLosPedidos, cambiarEstadoPedido, liberarMesa as liberarMesaServicio } from "../services/pedidos";
 import { FaUserTie, FaSignOutAlt, FaChair, FaBell, FaUtensils, FaUsers, FaClipboardList, FaCheckCircle, FaTruck, FaClock, FaTimes } from "react-icons/fa";
 
@@ -19,6 +20,7 @@ function Panel_Mesero({ usuario, setPagina }) {
   const [mostrarPedidosListos, setMostrarPedidosListos] = useState(false);
   const [pedidosListos, setPedidosListos] = useState([]);
   const [cargandoPedidosListos, setCargandoPedidosListos] = useState(false);
+  const [ultimoConteoPedidosListos, setUltimoConteoPedidosListos] = useState(0);
 
   if (!usuario) {
     const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"));
@@ -53,7 +55,14 @@ function Panel_Mesero({ usuario, setPagina }) {
       const res = await api.get("/mesas/pedidos/listos-recoger", {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setPedidosListos(res.data?.datos || []);
+      const nuevosPedidos = res.data?.datos || [];
+      setPedidosListos(nuevosPedidos);
+      
+      // Reproducir sonido si hay nuevos pedidos listos
+      if (nuevosPedidos.length > ultimoConteoPedidosListos) {
+        reproducirNotificacionPedidosListos();
+      }
+      setUltimoConteoPedidosListos(nuevosPedidos.length);
     } catch (error) {
       console.error("Error al obtener pedidos listos:", error);
     }
@@ -210,7 +219,12 @@ function Panel_Mesero({ usuario, setPagina }) {
           <h3><FaUsers /> Mensajes Clientes</h3>
           <p className={countClientes > 0 ? "notificacion-activa" : ""}>{countClientes}</p>
         </div>
-        <div className="btn-mensaje2" onClick={() => setMostrarPedidosListos(true)}>
+        <div className="btn-mensaje2" onClick={() => { 
+          if (pedidosListos.length > 0) {
+            reproducirNotificacionPedidosListos();
+          }
+          setMostrarPedidosListos(true);
+        }}>
           <h3><FaTruck /> Pedidos Listos</h3>
           <p className={pedidosListos.length > 0 ? "notificacion-activa" : ""}>{pedidosListos.length}</p>
         </div>
@@ -219,7 +233,12 @@ function Panel_Mesero({ usuario, setPagina }) {
       <div className="Botones">
         <button className="btn-1" onClick={() => setPagina("menuMesero")}><FaClipboardList /> Tomar Pedido</button>
         <button className="btn-2" onClick={() => setPagina("mensajecliente")}><FaBell /> Mensajes Clientes</button>
-        <button className="btn-3" onClick={() => setMostrarPedidosListos(true)}><FaTruck /> Pedidos Listos</button>
+        <button className="btn-3" onClick={() => { 
+          if (pedidosListos.length > 0) {
+            reproducirNotificacionPedidosListos();
+          }
+          setMostrarPedidosListos(true);
+        }}><FaTruck /> Pedidos Listos</button>
       </div>
 
       {mesaPedidoActiva && pedidoActivo && (

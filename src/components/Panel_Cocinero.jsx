@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { cambiarEstadoPedido } from "../services/pedidos";
+import { reproducirTimbre } from "../services/sonidos";
 import '../styles/Cocinero.css';
 import '../App.css';
 import { FaSignOutAlt, FaUserTie, FaClock, FaUtensils, FaClipboardCheck } from "react-icons/fa";
@@ -50,6 +51,12 @@ function Panel_Cocinero({ usuario, setPagina }) {
     setProcesandoPedidoId(pedidoId);
     try {
       await cambiarEstadoPedido(pedidoId, estado);
+      
+      // Reproducir timbre si es para entrega
+      if (estado === "PARA_ENTREGA") {
+        reproducirTimbre();
+      }
+      
       await cargarPedidosCocina();
     } catch (error) {
       alert(error?.response?.data?.error || "No se pudo actualizar el estado del pedido");
