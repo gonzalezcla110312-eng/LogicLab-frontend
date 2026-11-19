@@ -215,20 +215,56 @@ Entrega
 
 # Gestión de platos y menú
 
-El sistema incluye funcionalidades para administrar los platos disponibles en el restaurante.
+LogicLab cuenta con un módulo administrativo que permite gestionar los platos y productos disponibles en el restaurante.
 
-El administrador puede gestionar información relacionada con:
+## Funcionalidades de Gestión de Platos
 
-- Nombre del plato.
-- Descripción.
-- Precio.
-- Categoría.
-- Disponibilidad.
-- Imagen.
-- Información asociada al menú.
+- **Consultar platos:** visualizar los productos registrados y activos.
+- **Crear platos:** agregar productos con nombre, descripción, precio, categoría e imagen.
+- **Editar platos:** modificar la descripción y el precio de los productos existentes.
+- **Eliminar platos:** retirar productos del catálogo mediante un botón rojo llamado **Eliminar**.
+- **Confirmación de eliminación:** antes de eliminar un producto, el sistema solicita confirmación al administrador.
+- **Validación de nombres duplicados:** evita registrar dos productos activos con el mismo nombre, aunque se escriban con diferentes mayúsculas, minúsculas o espacios.
+- **Reutilización de nombres:** permite registrar nuevamente un producto eliminado con el mismo nombre y un precio diferente.
+- **Gestión de imágenes:** permite asociar imágenes a los productos.
 
----
+## Funcionamiento del botón Eliminar
 
+En la pantalla de Gestión de Platos, cada producto tiene dos botones:
+
+- **Editar:** permite modificar la información del producto.
+- **Eliminar:** permite retirarlo del catálogo después de confirmar la operación.
+
+La eliminación es lógica. El backend cambia el campo `activo` de `1` a `0` en MySQL, conservando el registro para proteger el historial de pedidos.
+
+### Ejemplo
+
+1. El administrador registra Carne Molida por $15.000.
+2. Presiona el botón **Eliminar**.
+3. Confirma la eliminación.
+4. El producto desaparece del catálogo.
+5. Puede registrar nuevamente Carne Molida por $20.000.
+
+## Integración con el backend
+
+El frontend utiliza Axios para comunicarse con la API REST.
+
+| Método | Endpoint | Funcionalidad |
+|---|---|---|
+| GET | `/api/platillos` | Consultar productos activos |
+| POST | `/api/platillos` | Crear un producto |
+| PUT | `/api/platillos/:id` | Editar un producto |
+| DELETE | `/api/platillos/:id` | Eliminar un producto del catálogo |
+
+## Archivo principal
+
+`src/components/Admin/Platos.jsx`
+
+Este componente contiene la interfaz de Gestión de Platos, los formularios de creación y edición, el botón Eliminar y la ventana de confirmación.
+
+## Gestión del menú
+
+El sistema también permite administrar los productos que forman parte del menú del restaurante, utilizando la información proporcionada por el backend.
 # Gestión de reservaciones
 
 LogicLab incluye un módulo administrativo para gestionar las reservaciones del restaurante.
